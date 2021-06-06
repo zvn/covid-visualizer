@@ -1,17 +1,18 @@
 import fs from 'fs';
 import regeneratorRuntime from "regenerator-runtime"
-const dataFolder = "./data/COVID-19/csse_covid_19_data/csse_covid_19_time_series";
-const parse = require('csv-parse/lib/sync')
+const DATA_FOLDER = "./data/COVID-19/csse_covid_19_data/csse_covid_19_time_series";
+const BEGIN_DATE_STR = '1/22/20';
+const parse = require('csv-parse/lib/sync');
 // https://csv.js.org/parse/api/sync/
-const sampleFilter = {
+const SAMPLE_FILTER = {
     'Province/State': '',
     'Country/Region': 'Zambia',
     Lat: -13.133897,
     Long: 27.849332};
-var alldata = {};
+var all_data = {};
 
 function readFileDataSync(filename, key) {
-    let file_buffer = fs.readFileSync(`${dataFolder}/${filename}`);
+    let file_buffer = fs.readFileSync(`${DATA_FOLDER}/${filename}`);
     let records = parse(file_buffer, {
         columns: true,
         skip_empty_lines: true
@@ -23,22 +24,36 @@ function readFileDataSync(filename, key) {
         if (Boolean(region.trim())) {
             continue;
         }
-        if ( !(country in alldata)) {
-            alldata[country] = {};
+        if ( !(country in all_data)) {
+            all_data[country] = {};
         }
         for (const property in record) {
-            if (property in sampleFilter) {
+            if (property in SAMPLE_FILTER) {
                 continue;
             }
             let date = property;
-            if(!(date in alldata[country])) {
-                alldata[country][date] = {};
+            if(!(date in all_data[country])) {
+                all_data[country][date] = {};
             }
-            alldata[country][date][key] = Number.parseInt(record[date]);
+            all_data[country][date][key] = Number.parseInt(record[date]);
         }
     }
 
 };
+
+function convertFromDictToList() {
+    for (let country in all_data) {
+        let new_list = [];
+        let curr_date_str = BEGIN_DATE_STR;
+        while(all_data[country][curr_date_str]) {
+            all_data[country][curr_date_str]['date_str'] = curr_date_str;
+            new_list.push(all_data[country][curr_date_str]);
+            curr_date_str = getDateWithOffset(curr_date_str, 1);
+        }
+        all_data[country] = new_list;
+    }
+}
+
 /**
  * 
  * @param {string} date A string representing date in m/d/y-in-short format.
@@ -59,22 +74,19 @@ function getDateWithOffset(date, offset) {
 }
 
 function fillDailyData() {
-    for(let country in alldata) {
-        for(let key in alldata[country]) {
-            // Format: Month/Date/YearInShort
-            // e.g. 10/7/20
-            let yesterday_str = getDateWithOffset(key, -1);
+    for(let country in all_data) {
+        for (var i = 0; i < all_data[country].length; i++) {
             var yesterday_data = {
                 'confirmed_total': 0,
                 'deaths_total': 0,
                 'recovered_total': 0
-            };
-            if(yesterday_str in alldata[country]) {
-                yesterday_data = alldata[country][yesterday_str];
             }
-            alldata[country][key]['confirmed_daily'] = alldata[country][key]['confirmed_total'] - yesterday_data['confirmed_total'];
-            alldata[country][key]['deaths_daily'] = alldata[country][key]['deaths_total'] - yesterday_data['deaths_total'];
-            alldata[country][key]['recovered_daily'] = alldata[country][key]['recovered_total'] - yesterday_data['recovered_total'];
+            if (i > 0) {
+                yesterday_data = all_data[country][i-1];
+            }
+            all_data[country][i]['confirmed_daily'] = all_data[country][i]['confirmed_total'] - yesterday_data['confirmed_total'];
+            all_data[country][i]['deaths_daily'] = all_data[country][i]['deaths_total'] - yesterday_data['deaths_total'];
+            all_data[country][i]['recovered_daily'] = all_data[country][i]['recovered_total'] - yesterday_data['recovered_total'];
         }
     }
 }
@@ -83,9 +95,14 @@ readFileDataSync('time_series_covid19_confirmed_global.csv', 'confirmed_total');
 readFileDataSync('time_series_covid19_deaths_global.csv', 'deaths_total');
 readFileDataSync('time_series_covid19_recovered_global.csv', 'recovered_total');
 
+convertFromDictToList();
+
 fillDailyData();
+
+
 // OK, normalize name
-alldata['Taiwan'] = alldata['Taiwan*'];
-delete alldata['Taiwan*'];
+all_data['Taiwan'] = all_data['Taiwan*'];
+delete all_data['Taiwan*'];
 const TAIWAN = 'Taiwan';
-export default alldata;
+console.log(all_data[TAIWAN]);
+export default all_data;
