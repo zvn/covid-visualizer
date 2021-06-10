@@ -40,6 +40,15 @@ function readFileDataSync(filename, key) {
     }
 
 };
+// TODO: move this to another file
+/**
+ * 
+ * @param {string} input the input string
+ * @returns {string} a corresponding string used as a part of RESTful API URL
+ */
+function getFormalAPICategory(input) {
+    return input.trim().toLowerCase().replaceAll(' ', '_');
+}
 
 function convertFromDictToList() {
     for (let country in all_data) {
@@ -50,7 +59,8 @@ function convertFromDictToList() {
             new_list.push(all_data[country][curr_date_str]);
             curr_date_str = getDateWithOffset(curr_date_str, 1);
         }
-        all_data[country] = new_list;
+        all_data[getFormalAPICategory(country)] = new_list;
+        delete all_data[country];
     }
 }
 
@@ -101,8 +111,8 @@ fillDailyData();
 
 
 // OK, normalize name
-all_data['Taiwan'] = all_data['Taiwan*'];
-delete all_data['Taiwan*'];
-const TAIWAN = 'Taiwan';
+all_data['taiwan'] = all_data['taiwan*'];
+delete all_data['taiwan*'];
+const TAIWAN = 'taiwan';
 console.log(all_data[TAIWAN]);
 export default all_data;
