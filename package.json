@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "npm run prod",
-    "build": "npm-run-all clean transpile",
+    "build-frontend": "cd frontend; npm run build",
+    "build": "npm-run-all clean transpile build-frontend",
     "run-dist": "node ./dist/bin/www",
     "transpile": "babel ./backend --out-dir dist",
     "clean": "rimraf dist",
