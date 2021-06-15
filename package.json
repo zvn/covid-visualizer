@@ -36,7 +36,9 @@
     "exec": "npm run dev",
     "watch": [
       "backend/*",
-      "public/*"
+      "public/*",
+      "frontend/src/*",
+      "frontend/public/*"
     ],
     "ignore": []
   }
