@@ -1,31 +1,12 @@
-import Card from 'react-bootstrap/Card'
+import logo from './logo.svg';
+import './App.css';
 
 function NumberWidget(props) {
-
-    /*
-
-            title="Cases" 
-              subtitle="People Tested Positive" 
-              daily="3"
-              sevendays="40"
-              trending_number="5"
-              trending_percent="30"
-              more_better="false"
-
-    */
-    return (
-        <Card class="border-light bg-light mb-3 p-4">
-            <Card.Body>
-                <Card.Title>{props.title}</Card.Title>
-                <Card.Subtitle>{props.subtitle}</Card.Subtitle>
-                <div>Daily</div>
-                <div>{props.daily}</div>
-                <div>Last 7 Days</div>
-                <span>{props.sevendays}</span>
-                <span>{props.trending_number} ({props.trending_percent}%)</span>
-            </Card.Body>
-        </Card>
-    );
-};
+  return (
+    <div>
+      
+    </div>
+  );
+}
 
 export default NumberWidget;
