@@ -4,9 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import grey from '@material-ui/core/colors/grey';
-import { CardHeader } from '@material-ui/core';
+import { BottomNavigation, CardHeader } from '@material-ui/core';
 import { CardContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
@@ -26,6 +27,11 @@ const widgetStyles = makeStyles({
   },
   secondarynumber: {
 
+  },
+  trendingIcon: {
+    verticalAlign: 'bottom',
+    fontSize: 19,
+    paddingBottom: 3,
   }
 });
 
@@ -62,6 +68,10 @@ function NumberWidget(props) {
     week_percent = Math.round(week_percent * 100) / 100;
   }
 
+  const daily_trending_icon = (today_diff < 0 ? ArrowDownwardIcon : ArrowUpwardIcon);
+  const weekly_trending_icon = (week_diff < 0 ? ArrowDownwardIcon : ArrowUpwardIcon);
+  
+
   
 
   return (
@@ -76,7 +86,7 @@ function NumberWidget(props) {
         <Typography className={classes.caption} color="textSecondary">
           Last 7 days
         </Typography>
-        <Grid alignItems="flex-end" container spacing={2}>
+        <Grid alignItems="flex-end" container spacing={1}>
           <Grid item>
             <Typography variant="h3" component="h2">
               {week_counter}
@@ -84,22 +94,24 @@ function NumberWidget(props) {
           </Grid>
           <Grid item>
             <Typography className={classes.caption} >
-              {week_diff} ({week_percent}%)
+              <SvgIcon component={weekly_trending_icon} className={classes.trendingIcon}></SvgIcon>
+              {Math.abs(week_diff)}({Math.abs(week_percent)}%)
             </Typography>
           </Grid>
         </Grid>
         <Typography variant="caption" color="textSecondary">
           Daily
         </Typography>
-        <Grid alignItems="flex-end" container spacing={2}>
+        <Grid alignItems="flex-end" container spacing={1}>
           <Grid item>
             <Typography variant="h5" component="h2">
               {today_counter}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid item>            
             <Typography className={classes.caption} >
-              {today_diff} ({today_percent}%)
+            <SvgIcon component={daily_trending_icon} className={classes.trendingIcon}></SvgIcon>
+              {Math.abs(today_diff)}({Math.abs(today_percent)}%)
             </Typography>
           </Grid>
         </Grid>
