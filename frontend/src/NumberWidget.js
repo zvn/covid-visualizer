@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import grey from '@material-ui/core/colors/grey';
+import green from '@material-ui/core/colors/green';
+import red from '@material-ui/core/colors/red';
 import { BottomNavigation, CardHeader } from '@material-ui/core';
 import { CardContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -11,7 +13,7 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
-const widgetStyles = makeStyles({
+const widgetStyles = makeStyles(props => ({
   root: {
     minWidth: 275,
     padding: 12,
@@ -19,13 +21,15 @@ const widgetStyles = makeStyles({
   title: {
     
   },
-  caption: {
-    
+  trendingCaption: {
+    padding: 4,
+    color: ({color}) => color[900],
+    backgroundColor: ({color}) => color[100],
   },
-  majornumber: {
+  majorNumber: {
 
   },
-  secondarynumber: {
+  secondaryNumber: {
 
   },
   trendingIcon: {
@@ -33,11 +37,10 @@ const widgetStyles = makeStyles({
     fontSize: 19,
     paddingBottom: 3,
   }
-});
+}));
 
 
 function NumberWidget(props) {
-  const classes = widgetStyles();
   var today_counter = 0;
   var today_diff = 0;
   var today_percent = 0;
@@ -71,7 +74,16 @@ function NumberWidget(props) {
   const daily_trending_icon = (today_diff < 0 ? ArrowDownwardIcon : ArrowUpwardIcon);
   const weekly_trending_icon = (week_diff < 0 ? ArrowDownwardIcon : ArrowUpwardIcon);
   
+  var color = grey;
+  if (Math.abs(week_percent) > 0.1) {
+    if (props['more_better'] === (week_percent > 0)) {
+      color = green;
+    } else {
+      color = red;
+    }
+  }
 
+  const classes = widgetStyles({color: color});
   
 
   return (
@@ -83,38 +95,35 @@ function NumberWidget(props) {
         {props.subtitle}
       </Typography>
       <CardContent>
-        <Typography className={classes.caption} color="textSecondary">
-          Last 7 days
-        </Typography>
-        <Grid alignItems="flex-end" container spacing={1}>
-          <Grid item>
-            <Typography variant="h3" component="h2">
-              {week_counter}
+        <Grid container spacing={0}>
+          <Grid>
+            <Typography color="textSecondary">
+              Last 7 days
             </Typography>
-          </Grid>
-          <Grid item>
-            <Typography className={classes.caption} >
-              <SvgIcon component={weekly_trending_icon} className={classes.trendingIcon}></SvgIcon>
-              {Math.abs(week_diff)}({Math.abs(week_percent)}%)
+            <Grid alignItems="flex-end" container spacing={1}>
+              <Grid item>
+                <Typography variant="h3" component="h2">
+                  {week_counter}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.trendingCaption} >
+                  <SvgIcon component={weekly_trending_icon} className={classes.trendingIcon}></SvgIcon>
+                  {Math.abs(week_diff)}({Math.abs(week_percent)}%)
+                </Typography>
+              </Grid>
+            </Grid>
+            <Typography variant="caption" color="textSecondary">
+              Daily
             </Typography>
-          </Grid>
-        </Grid>
-        <Typography variant="caption" color="textSecondary">
-          Daily
-        </Typography>
-        <Grid alignItems="flex-end" container spacing={1}>
-          <Grid item>
             <Typography variant="h5" component="h2">
               {today_counter}
             </Typography>
           </Grid>
-          <Grid item>            
-            <Typography className={classes.caption} >
-            <SvgIcon component={daily_trending_icon} className={classes.trendingIcon}></SvgIcon>
-              {Math.abs(today_diff)}({Math.abs(today_percent)}%)
-            </Typography>
+          <Grid>
+            Heres the chart
           </Grid>
-        </Grid>
+        </Grid>          
       </CardContent>
     </Card>
   );
