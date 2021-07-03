@@ -36,8 +36,8 @@ function App() {
           </Toolbar>
         </AppBar>
       <Box m={3}>
-        <Grid container m={10} spacing={3} justify="center" className={classes.grid}>
-          <Grid item xs={6}>
+        <Grid container spacing={3} justify="flex-start" className={classes.grid}>
+          <Grid item sm={12} md={6}>
             <NumberWidget
               title="Cases"
               subtitle="People tested positive"
@@ -47,7 +47,7 @@ function App() {
               more_better = {false}
               ></NumberWidget>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item sm={12} md={6}>
             <NumberWidget
               title="Deaths"
               subtitle="People died due to COVID-19"

@@ -104,7 +104,7 @@ function NumberWidget(props) {
       </Typography>
       <CardContent>
         <Grid container spacing={0}>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={4} md={4}>
             <Typography color="textSecondary">
               Last 7 days
             </Typography>
@@ -128,13 +128,15 @@ function NumberWidget(props) {
               {today_counter}
             </Typography>
           </Grid>
-          <Grid container item xs={6} minWidth={300} height={200}>
-              <LineChart width={300} height={200} data={display_data}>
+          <Grid item xs={12} sm={8} md={8}>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={display_data}>
                 <XAxis dataKey={props['display_key']}/>
                 <YAxis/>
                 <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
                 <Line type="monotone" dataKey={props.datakey + '_daily'} stroke="#8884d8" />
               </LineChart>
+            </ResponsiveContainer>
           </Grid>
         </Grid>          
       </CardContent>
