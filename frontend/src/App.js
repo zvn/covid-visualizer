@@ -43,6 +43,7 @@ function App() {
               subtitle="People tested positive"
               data = {data}
               datakey = {'confirmed'}
+              display_key = {"date_str"}
               more_better = {false}
               ></NumberWidget>
           </Grid>
@@ -52,6 +53,7 @@ function App() {
               subtitle="People died due to COVID-19"
               data = {data}
               datakey = {'deaths'}
+              display_key = {"date_str"}
               more_better = {false}
               ></NumberWidget>
           </Grid>

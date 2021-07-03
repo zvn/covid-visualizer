@@ -13,6 +13,9 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+
 const widgetStyles = makeStyles(props => ({
   root: {
     minWidth: 275,
@@ -84,6 +87,11 @@ function NumberWidget(props) {
   }
 
   const classes = widgetStyles({color: color});
+  var display_data = [];
+  for(var i = 0; i < 180 && i <= props.data.length; i++) {
+    display_data.push(props.data[props.data.length - i]);
+  }
+  display_data.reverse();
   
 
   return (
@@ -96,7 +104,7 @@ function NumberWidget(props) {
       </Typography>
       <CardContent>
         <Grid container spacing={0}>
-          <Grid>
+          <Grid item xs={6}>
             <Typography color="textSecondary">
               Last 7 days
             </Typography>
@@ -120,8 +128,13 @@ function NumberWidget(props) {
               {today_counter}
             </Typography>
           </Grid>
-          <Grid>
-            Heres the chart
+          <Grid container item xs={6} minWidth={300} height={200}>
+              <LineChart width={300} height={200} data={display_data}>
+                <XAxis dataKey={props['display_key']}/>
+                <YAxis/>
+                <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+                <Line type="monotone" dataKey={props.datakey + '_daily'} stroke="#8884d8" />
+              </LineChart>
           </Grid>
         </Grid>          
       </CardContent>
