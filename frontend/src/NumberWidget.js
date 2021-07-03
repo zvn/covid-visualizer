@@ -133,8 +133,10 @@ function NumberWidget(props) {
               <LineChart data={display_data}>
                 <XAxis dataKey={props['display_key']}/>
                 <YAxis/>
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-                <Line type="monotone" dataKey={props.datakey + '_daily'} stroke="#8884d8" />
+                <CartesianGrid stroke="#eee" strokeDasharray="3 3"/>
+                <Tooltip/>
+                <Legend/>
+                <Line name={props.title} type="monotone" dot={false} legendType="line" dataKey={props.datakey + '_daily'} stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
           </Grid>
