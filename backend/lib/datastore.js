@@ -130,7 +130,7 @@ async function updateAllData() {
     all_data = all_data_cache;
     all_data_cache = {};
 
-    setTimeout(updateAllData, 1000 * 60);
+    setTimeout(updateAllData, 1000 * 3600);
 }
 
 updateAllData();
