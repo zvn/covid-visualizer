@@ -19,7 +19,6 @@ var all_data = {};
 async function readFileDataSync(filename, key) {
     // let file_buffer = fs.readFileSync(`${DATA_FOLDER}/${filename}`);
     let file_response = await axios.get(`${JHU_URL_PREFIX}${filename}`);
-    console.log("type: " + typeof(file_response.data));
     let file_buffer = Buffer.from(file_response.data);
     return parseJHURecord(file_buffer, key);
 };
@@ -123,11 +122,9 @@ async function updateAllData() {
     all_data_cache['taiwan'] = all_data_cache['taiwan*'];
     delete all_data_cache['taiwan*'];
     const TAIWAN = 'taiwan';
-    console.log(all_data_cache[TAIWAN]);
-
-
 
     all_data = all_data_cache;
+    // console.log(all_data[TAIWAN]);
     all_data_cache = {};
 
     setTimeout(updateAllData, 1000 * 3600);
@@ -135,4 +132,8 @@ async function updateAllData() {
 
 updateAllData();
 
-export default all_data;
+function getAllData() {
+    return all_data;
+}
+
+export default getAllData;

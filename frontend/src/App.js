@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, rgbToHex } from '@material-ui/core/styles';
 import NumberWidget from './NumberWidget';
 import Box from '@material-ui/core/Box';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,9 +26,17 @@ const useStyles = makeStyles((theme) => ({
 
 
 function App() {
-
+  const [data, setData] = useState(testData);
   const classes = useStyles();
-  const data = testData;
+  // const data = testData;
+
+  useEffect(() => {
+    axios.get('data/taiwan')
+    .then(response => {
+      setData(response.data);
+    }).catch(err => console.error(`Error: ${err}`));
+  }, []);
+  
 
   return (
     <Box className={classes.root}>
