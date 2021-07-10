@@ -1,13 +1,11 @@
 import fs from 'fs';
 import regeneratorRuntime from "regenerator-runtime"
 import { setTimeout } from 'timers';
-const DATA_FOLDER = "./data/COVID-19/csse_covid_19_data/csse_covid_19_time_series";
 const JHU_URL_PREFIX = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/";
+const OWID_VACCINE_DATA_URL = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv";
 const BEGIN_DATE_STR = '1/22/20';
 const parse = require('csv-parse/lib/sync');
 const axios = require('axios');
-// https://csv.js.org/parse/api/sync/
-// https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv
 const SAMPLE_FILTER = {
     'Province/State': '',
     'Country/Region': 'Zambia',
@@ -27,7 +25,7 @@ function parseJHURecord(file_buffer, key) {
     let records = parse(file_buffer, {
         columns: true,
         skip_empty_lines: true
-      })
+      });
     for(var record of records) {
         let country = record['Country/Region'];
         let region = record['Province/State'];
@@ -66,7 +64,8 @@ function convertFromDictToList() {
         let new_list = [];
         let curr_date_str = BEGIN_DATE_STR;
         while(all_data_cache[country][curr_date_str]) {
-            all_data_cache[country][curr_date_str]['date_str'] = curr_date_str;
+            let base_date_fields = curr_date_str.split('/');
+            all_data_cache[country][curr_date_str]['date_str'] = `20${base_date_fields[2]}/${base_date_fields[0]}/${base_date_fields[1]}`;
             new_list.push(all_data_cache[country][curr_date_str]);
             curr_date_str = getDateWithOffset(curr_date_str, 1);
         }
@@ -112,6 +111,64 @@ function fillDailyData() {
     }
 }
 
+function assignIfANumber(source, field, target) {
+    let value = parseFloat(source[field]);
+    if (!isNaN(value)) {
+        target[field] = Math.round(value * 100) / 100;
+    }
+}
+
+async function readVaccineData() {
+    let file_response = await axios.get(OWID_VACCINE_DATA_URL);
+    let file_buffer = Buffer.from(file_response.data);
+    let records = parse(file_buffer, {
+        columns: true,
+        skip_empty_lines: true
+      });
+    let last_country = '';
+    let last_index = 0;
+    let country_list = [];
+    let last_record = null;
+    for(var record of records) {
+        let country = getFormalAPICategory(record['location']);
+        let record_time = (new Date(record['date'] + ' GMT')).getTime();
+        if(country in all_data_cache) {
+            if (country !== last_country) {
+                country_list = all_data_cache[country];
+                last_index = -1;
+                last_record = null;
+            }
+            for(let i = last_index + 1; i < country_list.length; i++) {
+                var cache_time = new Date(country_list[i]['date_str'] + ' GMT').getTime();
+                
+                if (cache_time === record_time) {
+                    if(last_record === null) {
+                        last_record = {
+                            people_vaccinated: 0,
+                            people_fully_vaccinated: 0,
+                            people_vaccinated_per_hundred: 0,
+                            people_fully_vaccinated_per_hundred: 0
+                        }
+                    }
+                    for (var key in last_record) {
+                        assignIfANumber(record, key, last_record);
+                    }
+                    last_index = i;
+                }
+                if (last_record !== null) {
+                    for (var key in last_record) {
+                        country_list[i][key] = last_record[key];
+                    }
+                }
+                if (cache_time === record_time) {
+                    break;
+                }
+            }
+        }
+        last_country = country;
+    }
+}
+
 async function updateAllData() {
     await readFileDataSync('time_series_covid19_confirmed_global.csv', 'confirmed_total');
     await readFileDataSync('time_series_covid19_deaths_global.csv', 'deaths_total');
@@ -122,6 +179,8 @@ async function updateAllData() {
     all_data_cache['taiwan'] = all_data_cache['taiwan*'];
     delete all_data_cache['taiwan*'];
     const TAIWAN = 'taiwan';
+
+    await readVaccineData();
 
     all_data = all_data_cache;
     // console.log(all_data[TAIWAN]);
