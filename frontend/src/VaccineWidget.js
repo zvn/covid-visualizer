@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import VaccineOverallStatusCard from './VaccineOverallStatus';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -40,6 +41,17 @@ const widgetStyles = makeStyles(props => ({
   }
 }));
 
+function countVaccineDiff(start, end) {
+  var diff = {};
+  if (start !== null) {
+    for (var key in end) {
+      diff[key] = end[key] - start[key];
+    }
+  } else {
+    return end;
+  } 
+  return diff;
+}
 
 function VaccineWidget(props) {
   
@@ -68,14 +80,13 @@ function VaccineWidget(props) {
   
   const classes = widgetStyles({color: green});
   
-  var latest_daily = display_data[display_data.length - 1];
-  latest_daily['first_doze'] = 0;
-  latest_daily['second_doze'] = 0;
-  latest_daily['first_percent'] = 0;
-  latest_daily['second_percent]'] = 0;
+  var latest_daily_diff = display_data[display_data.length - 1];
+  var latest_weekly_diff = display_data[display_data.length - 1];
   if (display_data.length > 1) {
-    latest_daily['first_doze'] = display_data[display_data.length - 1]['people_vaccinated'] - display_data[display_data.length - 2]['people_vaccinated'];
-    latest_daily['second_doze'] =display_data[display_data.length - 1]['people_fully_vaccinated'] - display_data[display_data.length - 2]['people_fully_vaccinated'];
+    latest_daily_diff = countVaccineDiff(display_data[display_data.length - 2], display_data[display_data.length - 1]);
+  }
+  if (display_data.length > 7) {
+    latest_weekly_diff = countVaccineDiff(display_data[display_data.length - 8], display_data[display_data.length - 1]);
   }
 
 
@@ -89,10 +100,10 @@ function VaccineWidget(props) {
       </Typography>
       <CardContent>
         <Grid container spacing={0}>
-          <Grid item xs={12} sm={4} md={4}>
-            
+          <Grid item xs={12} sm={12} md={6}>
+            <VaccineOverallStatusCard data = {display_data[display_data.length - 1]}></VaccineOverallStatusCard>
           </Grid>
-          <Grid item xs={12} sm={8} md={8}>
+          <Grid item xs={12} sm={12} md={6}>
             
           </Grid>
 
