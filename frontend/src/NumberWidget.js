@@ -39,6 +39,9 @@ const widgetStyles = makeStyles(props => ({
     verticalAlign: 'bottom',
     fontSize: 19,
     paddingBottom: 3,
+  },
+  indent_down: {
+    paddingBottom: 10,
   }
 }));
 
@@ -104,7 +107,7 @@ function NumberWidget(props) {
       </Typography>
       <CardContent>
         <Grid container spacing={0}>
-          <Grid item xs={12} sm={4} md={4}>
+          <Grid item xs={12} sm={4} md={4} className={classes.indent_down}>
             <Typography color="textSecondary">
               Last 7 days
             </Typography>
