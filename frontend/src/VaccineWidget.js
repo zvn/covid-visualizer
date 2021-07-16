@@ -1,19 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import grey from '@material-ui/core/colors/grey';
 import green from '@material-ui/core/colors/green';
-import red from '@material-ui/core/colors/red';
-import { BottomNavigation, CardHeader } from '@material-ui/core';
 import { CardContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VaccineOverallStatusCard from './VaccineOverallStatus';
 import VaccineTrendingStatusCard from './VaccineTrendingStatus';
-
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 const widgetStyles = makeStyles(props => ({
@@ -41,25 +33,6 @@ const widgetStyles = makeStyles(props => ({
     paddingBottom: 3,
   }
 }));
-
-function countVaccineDiff(start, end) {
-  var sample_data = {
-    people_vaccinated: 0,
-    people_fully_vaccinated: 0,
-    people_vaccinated_per_hundred: 0,
-    people_fully_vaccinated_per_hundred: 0
-  };
-  var diff = {};
-  if (start === null) {
-    start = sample_data;
-  }
-  for (var key in sample_data) {
-    diff[key] = end[key] - start[key];
-  }
-  diff['date_str'] = end['date_str'];
-   
-  return diff;
-}
 
 function VaccineWidget(props) {
   var data_counts = props.data.length;
@@ -102,10 +75,14 @@ function VaccineWidget(props) {
     <Card className={classes.root}>
       <Typography eventName={classes.title} variant="h4" component="h2">
         Vaccinations
+        
       </Typography>
       <Typography color="textSecondary">
-        People vaccinated
+        People vaccinated <Typography color="textSecondary" variant="subitle2" align="right" className={classes.second_dose}>
+             - Up to {accumulated_data[accumulated_data.length - 1]['date_str']}
+          </Typography>
       </Typography>
+      
       <CardContent>
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12} md={6}>
@@ -115,7 +92,6 @@ function VaccineWidget(props) {
             <VaccineTrendingStatusCard 
               history={accumulated_data}></VaccineTrendingStatusCard>
           </Grid>
-
         </Grid>          
       </CardContent>
     </Card>

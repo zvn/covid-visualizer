@@ -3,18 +3,8 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import grey from '@material-ui/core/colors/grey';
 import green from '@material-ui/core/colors/green';
-import { indigo } from '@material-ui/core/colors';
-
-import { BottomNavigation, CardHeader } from '@material-ui/core';
-import { CardContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import { Paper } from '@material-ui/core';
-
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import NumberFormat from 'react-number-format';
 import StopIcon from '@material-ui/icons/Stop';
 
 var first_color_tone = 500;
@@ -113,6 +103,7 @@ function VaccineOverallStatusCard(props) {
           <Typography variant="h4" align="right" className={classes.second_dose}>
             {data.people_fully_vaccinated_per_hundred}%
           </Typography>
+          
         </Grid>
         <Grid item xs={12} sm={8} className={classes.icon_matrix_container + " " + classes.indent_down} >
           {icon_matrix}
