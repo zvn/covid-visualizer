@@ -3,19 +3,10 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import grey from '@material-ui/core/colors/grey';
 import green from '@material-ui/core/colors/green';
-import { indigo } from '@material-ui/core/colors';
-
-import { BottomNavigation, CardHeader } from '@material-ui/core';
-import { CardContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import { Paper } from '@material-ui/core';
 
-import { AreaChart, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area } from 'recharts';
+import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area } from 'recharts';
 import NumberFormat from 'react-number-format';
-import StopIcon from '@material-ui/icons/Stop';
 
 var first_color_tone = 500;
 var second_color_tone = 900;
@@ -66,25 +57,6 @@ const widgetStyles = makeStyles(props => ({
     minWidth: 250,
   }
 }));
-
-function countVaccineDiff(start, end) {
-  var sample_data = {
-    people_vaccinated: 0,
-    people_fully_vaccinated: 0,
-    people_vaccinated_per_hundred: 0,
-    people_fully_vaccinated_per_hundred: 0
-  };
-  var diff = {};
-  if (start === null) {
-    start = sample_data;
-  }
-  for (var key in sample_data) {
-    diff[key] = end[key] - start[key];
-  }
-  diff['date_str'] = end['date_str'];
-   
-  return diff;
-}
 
 function VaccineTrendingStatusCard(props) {
   var vaccine_color = green;
