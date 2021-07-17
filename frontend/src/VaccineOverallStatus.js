@@ -92,13 +92,13 @@ function VaccineOverallStatusCard(props) {
           Overall Status
         </Typography>
         <Typography  color="textSecondary" align="right">
-            First Dose in Percent {first_dose_icon}
+            First Dose in Percentage {first_dose_icon}
           </Typography>
           <Typography variant="h4" align="right" className={classes.first_dose}>
             {data.people_vaccinated_per_hundred}%
           </Typography>
           <Typography  color="textSecondary" align="right">
-            Second Dose in Percent {second_dose_icon}
+            Second Dose in Percentage {second_dose_icon}
           </Typography>
           <Typography variant="h4" align="right" className={classes.second_dose}>
             {data.people_fully_vaccinated_per_hundred}%
