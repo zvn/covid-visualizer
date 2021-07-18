@@ -61,7 +61,15 @@ function NumberWidget(props) {
     week_counter = 
       props.data[data_counts - 1][props.datakey + '_total'] - 
       props.data[data_counts - 8][props.datakey + '_total'];
-    week_diff = today_counter - props.data[data_counts - 8][props.datakey + '_daily'];
+    if (data_counts <= 14) {
+      week_diff = week_counter - props.data[data_counts - 8][props.datakey + '_total'];
+      week_percent = week_diff * 100 / (week_counter - week_diff);
+      week_percent = Math.round(week_percent * 100) / 100;
+    }
+  }
+  if (data_counts > 14) {
+    week_diff = week_counter - (
+      props.data[data_counts - 8][props.datakey + '_total'] - props.data[data_counts - 15][props.datakey + '_total']);
     week_percent = week_diff * 100 / (week_counter - week_diff);
     week_percent = Math.round(week_percent * 100) / 100;
   }
